@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<!-- saved from url=(0076)https://mdn.github.io/dom-examples/drag-and-drop/copy-move-DataTransfer.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>2DString</title>
+
+<!-- 
+   This example demonstrates using various HTML Drag and Drop interfaces including:
+   * Global "draggable" attribute
+   * Event handlers for dragstart, dragover and drop
+   * Global event handlers for ondragstart, ondragover and ondrop
+   * Using the DataTransfer interface to copy and move elements (<div>)
+-->
+<style>
+  .center {
+    text-align: center;
+  }
+  td {
+  text-align: center;
+  }
+  #bg {
+  background-image: url("map.png");
+  background-repeat:no-repeat;
+  /* background-attachment:fixed; */
+  
+  /* 背景圖片位置固定 */
+  background-position:center;
+  margin: 0%;
+  padding: 0%;
+  border: 0%;
+  /* 背景圖片水平位置與垂直位置均置中對齊; */
+  
+  }
+  #map {
+    background-image: url("map.png");
+    background-position:center;
+    width:auto;
+    height:auto;
+
+  }
+  div {
+    margin: 0em;
+    padding: 1em;
+    text-align: center;
+    
+  }
+  #A, #B, #C, #D, #E, #F, #G, #H, #I, #J, #src_move  {
+    color: blue;
+    border: 3px solid black;
+    width: 100px;
+    height: 50px;
+    text-align: center;
+  }
+  #dest_copy {
+    border: 1px dashed blue;
+    width: 50px;
+    height: 50;
+    text-align: center;
+  }
+  #dest_move {
+    border: 1px solid blue;
+    width: 10px;
+    height: 50;
+    text-align: center;
+  }
+</style>
+<script>
+function dragstart_handler(ev) {
+ console.log("dragStart");
+ // Change the source element's background color to signify drag has started
+ ev.currentTarget.style.border = "dashed";
+ // Add the id of the drag source element to the drag data payload so
+ // it is available when the drop event is fired
+ ev.dataTransfer.setData("text", ev.target.id);
+ // Tell the browser both copy and move are possible
+ ev.effectAllowed = "copyMove";
+}
+// 加透明度 query 要有顏色 要有透明度 
+// display 結果 
+function dragover_handler(ev) {
+ console.log("dragOver");
+ // Change the target element's border to signify a drag over event
+ // has occurred
+ console.log(ev.target.id);
+ ev.dataTransfer.setData("text", ev.target.id);
+ console.log(ev.dataTransfer.getData("text"));
+ // add delete 
+ ev.currentTarget.style.background = "rgba(0,0,255,0.3)";
+ ev.preventDefault();
+}
+function drop_handler(ev) {
+  console.log("Drop");
+  ev.preventDefault();
+  // Get the id of drag source element (that was added to the drag data
+  // payload by the dragstart event handler)
+  var id = ev.dataTransfer.getData("text");
+  // Only Move the element if the source and destination ids are both "move"
+  if (id == "src_move" && ev.target.id == "dest_move")
+    ev.target.appendChild(document.getElementById(id));
+    
+  // Copy the element if the source and destination ids are both "copy"
+  if ((id == "A" || id == "B" || id == "C" || id == "D" || id == "E" || id == "F" || id == "G" || id == "H" || id == "I" || id =="J") && ev.target.id == "dest_copy") {
+   var nodeCopy = document.getElementById(id).cloneNode(true);
+   console.log(nodeCopy);
+   nodeCopy.id = "newId";
+   if (id == "A"){
+    ev.currentTarget.style.background = "lightgreen";
+   }else if (id == "B"){
+    ev.currentTarget.style.background = "LightSeaGreen";
+   }else if (id == "C"){
+    ev.currentTarget.style.background = "lightyellow";
+   }else if (id == "D"){
+    ev.currentTarget.style.background = "yellow";
+   }else if (id == "E"){
+    ev.currentTarget.style.background = "orange";
+   }else if (id == "F"){
+    ev.currentTarget.style.background = "darkorange";
+   }else if (id == "G"){
+    ev.currentTarget.style.background = "IndianRed";
+   }else if (id == "H"){
+    ev.currentTarget.style.background = "red";
+   }else if (id == "I"){
+    ev.currentTarget.style.background = "purple";
+   }else if (id == "J"){
+    ev.currentTarget.style.background = "brown";
+   }
+   //ev.target.appendChild(nodeCopy);
+  }
+}
+function dragend_handler(ev) {
+  console.log("dragEnd");
+  // Restore source's border
+  ev.target.style.border = "solid black";
+  // Remove all of the drag data
+  ev.dataTransfer.clearData();
+}
+</script>
+<link href="form-validation.css" rel="stylesheet">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body class="bg-light">
+<!-- put map -->
+<div class="py-5 text-center">
+  <!-- <img class="d-block mx-auto mb-4" src="/docs/4.5/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72"> -->
+  <h2>Customize your own 2DString</h2>
+  <p class="lead">This is a simple demo! Which makes you more convenient</p>
+</div>
+ <div class="center" >
+ 
+ <div class="center">
+  <table id="map" style="display:inline;">
+   <tr>
+     <td>
+       <div draggable="true" id="A" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">
+         GOOD (A)
+       </div>
+     </td>
+     <td>
+       <div draggable="true" id="B" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">
+         GOOD (B)
+       </div>
+     </td>
+     <td>
+       <div draggable="true" id="C" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">
+         Moderate (C)
+       </div>
+     </td>
+     <td>
+       <div draggable="true" id="D" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">
+         Moderate (D)
+       </div>
+     </td>
+     <td>
+       <div draggable="true" id="E" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">
+         <span style="font-size: 12px;">Unhealthy for Sensitive(E)</span>
+       </div>
+     </td>
+     
+   </tr>
+   <tr>
+     <td>
+       <div draggable="true" id="F" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">
+         <span style="font-size: 12px;">Unhealthy for Sensitive(F)</span>
+       </div>
+     </td>
+     <td>
+       <div draggable="true" id="G" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">
+        Unhealthy (G)
+       </div>
+     </td>
+     <td>
+       <div draggable="true" id="H" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">
+        Unhealthy (H)
+       </div>
+     </td>
+     <td>
+       <div draggable="true" id="I" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">
+         Very Unhealthy (I)
+       </div>
+     </td>
+     <td>
+       <div draggable="true" id="J" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">
+         Hazardous (J)
+       </div>
+     </td>
+     
+   </tr>
+  </table>
+  
+ </div>
+ <div id="bg">
+ <table  style="display:inline;">
+  <tr>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 1</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 2</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 3</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 4</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 5</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 6</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 7</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 8</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 9</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 10</strong></div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 11</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 12</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 13</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 14</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 15</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 16</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 17</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 18</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 19</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 20</strong></div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 21</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 22</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 23</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 24</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 25</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 26</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 27</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 28</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 29</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 30</strong></div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 33</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 34</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 35</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 36</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 37</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 38</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 39</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 40</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 41</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 42</strong></div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 43</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 44</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 45</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 46</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 47</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 48</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 49</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 50</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 51</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 52</strong></div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 53</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 54</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 55</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 56</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 57</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 58</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 59</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 60</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 61</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 62</strong></div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 63</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 64</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 65</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 66</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 67</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 68</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 69</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 70</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 71</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 72</strong></div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 73</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 74</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 75</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 76</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 77</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 78</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 79</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 80</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 81</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 82</strong></div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 83</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 84</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 85</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 86</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 87</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 88</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 89</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 90</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 91</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 92</strong></div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 93</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 94</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 95</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 96</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 97</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 98</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 99</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 100</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 1</strong></div>
+    </td>
+    <td>
+      <div id="dest_copy" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Zone 1</strong></div>
+    </td>
+  </tr>
+ </table>
+ </div>>
+ <!-- <div draggable="true" id="src_move" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">
+     Select this element and drag to the <strong>Move Drop Zone</strong>.
+ </div>
+ <div id="dest_move" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><strong>Move Drop Zone</strong></div> -->
+
+
+</body></html>
