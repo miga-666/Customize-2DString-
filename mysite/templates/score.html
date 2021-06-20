@@ -154,16 +154,18 @@
     console.log(num)
     let placeOfPic = document.getElementById("matchPic");
     for(let index = 0 ; index < 3;index ++){
-      placeOfPic[index].innerHTML += `
+      placeOfPic.innerHTML += `
       <div class="containerPic"></div>
       `;
       
     }
     let placeOfCard = document.getElementsByClassName("containerPic");
-    for(let index = 0 ; index < 8;index ++){
-      placeOfCard[index].innerHTML += `
-        <div class="card"><div class="info"></div></div>
-      `;
+    for(let index = 0 ; index < placeOfCard.length;index ++){
+      for(let j = 0 ; j < 8 ; j++){
+        placeOfCard[index].innerHTML += `
+          <div class="card"><div class="info"></div></div>
+        `;
+      }
     }
 
 
