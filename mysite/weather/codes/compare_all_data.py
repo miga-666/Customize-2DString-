@@ -1,7 +1,7 @@
 import os
 import csv
 from collections import defaultdict
-import sys, getopt
+import sys
 import time
 # os.system("")
 #該版本是返回最長公共子串和其長度，若只返回長度，則可以簡化
@@ -119,6 +119,7 @@ def Score(str1, str2):
     # Str1 and Str2 are list of string including x and y
     # Str1 is string in library
     # Str2 is user's query
+
     parameter = {}
     N = len(str2[0].replace('#',''))/4
     newStr1 = []
@@ -159,6 +160,7 @@ def Score(str1, str2):
 def main(argv):
     
     query = []
+    """
     try:
         opts, args = getopt.getopt(argv,"hx:y:",["stringx=","stringy="])
     except getopt.GetoptError:
@@ -174,15 +176,24 @@ def main(argv):
         elif opt in ("-y", "--stringy"):
             stringY = arg
             query.append(stringY)
+    """
+    # print('argv: ')
+    # print(argv)
+    # print('-----')
+    for i in argv:
+        query.append('#'+i)
+    # print(query)
     # print ('2DStringX：', stringX)
     # print ('2DStringY：', stringY)
     #query = list(map(str,input("String to compare: ").split()))
     library = defaultdict(dict)
-    with open('file_output(try2).csv', newline='') as csvfile:
+    with open('/home/s3014/Customize-2DString-/mysite/weather/codes/allData.csv', newline='') as csvfile:
         # 讀取 CSV 檔案內容
         rows = csv.reader(csvfile)
         for row in rows:
             tmp = row
+            # print('row')
+            # print(tmp)
             #tmp = row.split('\t')
             #print(tmp)
             if tmp[1] == 'X':
@@ -193,6 +204,7 @@ def main(argv):
         csvfile.close()
         #print(library['2018/1/3 19:00']['X'])
     #print('Read End')
+    # print(library)
     allScore = {}
     parameter_All = {}
     for i in library.keys():
@@ -238,7 +250,7 @@ def main(argv):
     for i in range(len(date)):
         date[i] = date[i].replace('-',' ')
     selectData = defaultdict(dict)
-    with open('./2018micro高斯new.csv', newline='') as csvfile:
+    with open('/home/s3014/Customize-2DString-/mysite/weather/codes/2018micro高斯new.csv', newline='') as csvfile:
         # 讀取 CSV 檔案內容
         rows = csv.reader(csvfile)
         for row in rows:
@@ -256,7 +268,7 @@ def main(argv):
         selectData[i]['afterLevel'] = tmp_level
     #print(selectData)
     library = defaultdict(dict)
-    with open('file_output(try2).csv', newline='') as csvfile:
+    with open('/home/s3014/Customize-2DString-/mysite/weather/codes/allData.csv', newline='') as csvfile:
         # 讀取 CSV 檔案內容
         rows = csv.reader(csvfile)
         for row in rows:
@@ -275,7 +287,7 @@ def main(argv):
     #         print(j , end = ' : ')
     #         print(parameter_All[i][j])
     now = time.strftime("%m-%d-%Y_%H-%M-%S", time.localtime())
-    with open('output_selectDate_'+now+'.csv', 'w', newline='') as csvfile:
+    with open('/home/s3014/Customize-2DString-/mysite/weather/codes/output_selectDate_'+now+'.csv', 'w', newline='') as csvfile:
         # 以空白分隔欄位，建立 CSV 檔寫入器
         writer = csv.writer(csvfile, delimiter=',')
         for i in selectData.keys():

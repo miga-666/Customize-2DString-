@@ -18,8 +18,9 @@ def score(request):
         stringY = request.POST['StringY']
         ctx['stringX'] = stringX
         ctx['stringY'] = stringY
-        os.chdir("./weather/codes/")
-        command = 'python compare_all_data.py -x ' + stringX +' -y ' + stringY
+        print(os.getcwd())
+        os.chdir("/home/s3014/Customize-2DString-/mysite/weather/codes/")
+        command = 'python3 compare_all_data.py ' + stringX +' ' + stringY
         ctx['allContainer'] = os.popen(command).readlines()
         date = []
         content = []
@@ -129,7 +130,7 @@ def getQuery(request):
         print(dataString) 
         print('---java----')
         print(os.getcwd())
-        os.chdir("./weather/codes")
+        os.chdir("/home/s3014/Customize-2DString-/mysite/weather/codes")
         os.system("javac ContourTracingViaWeb.java")
         command = "java ContourTracingViaWeb "+ dataString
         getString = os.popen(command).readlines()
@@ -142,7 +143,10 @@ def getQuery(request):
         ctx['stringY'] = stringY
         # os.chdir("C:/sources/LCS")
         print('---LCS----')
-        command = 'python compare_all_data.py -x ' + stringX +' -y ' + stringY
+        # input can't read when starting with '#'
+        stringXwithoutSharp = stringX[1:]
+        stringYwithoutSharp = stringY[1:]
+        command = 'python3 compare_all_data.py ' + stringXwithoutSharp +' ' + stringYwithoutSharp
         print(command)
         ctx['allContainer'] = os.popen(command).readlines()
         
@@ -164,16 +168,16 @@ def getQuery(request):
         jsonDate = json.dumps(ctx['resultDate'])
         ctx['jsonDate'] = jsonDate
         
-
-        # os.chdir("C:/sources/python")
+        print(jsonDate)
+        
         print('---Pic----')
         print(os.getcwd())
-        getPicCommand = 'python userDataPic.py ' + dataString
+        getPicCommand = 'python3 userDataPic.py ' + dataString
         print(getPicCommand)
         getPicName = os.popen(getPicCommand).readlines()[0].strip()
         ctx['PicName'] = getPicName
         print('---static----')
         print(os.getcwd())
-        os.chdir("../static/sis")
+        os.chdir("/home/s3014/Customize-2DString-/mysite/weather/static/sis")
         mixPic(getPicName)
     return render(request, "score.html", ctx)
