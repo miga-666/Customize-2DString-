@@ -16,9 +16,11 @@
     .containerPic {
       text-align: center;
       width: 95%;
-      margin: 50px auto;
+      margin: 0px auto;
     }
-
+    .containerPage{
+			margin: 100px auto;
+		}
     .card {
       /* 定位點 */
       position: relative;
@@ -88,8 +90,10 @@
       <div id="userPic" class="col-md-4">
       </div>
     </div>
+    
   </div>
-
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+  <script type="text/javascript" src="/static/js/pagination.js"></script>
   <script>
     let date_data = "{{ resultDate }}".replaceAll('&#x27;', '').replaceAll('[', '').replaceAll(']', '').replaceAll(' ', '').split(',')
     let time_data = "{{ resultTime }}".replaceAll('&#x27;', '').replaceAll('[', '').replaceAll(']', '').replaceAll(' ', '').split(',')
@@ -97,7 +101,7 @@
     console.log(date_data);
     console.log(time_data);
     console.log(content_data);
-    var num = 0
+    // var num = 0
     function getFileName(index) {
       return "/static/sis/" + date_data[index];
     }
@@ -119,39 +123,30 @@
     console.log(getFileAllPath("{{ PicName }}"));
     userPic.innerHTML += `<img src="${getFileAllPath("{{ PicName }}")}">`;
   </script>
-
-  <!-- {% with ''|center:3 as rangeRow %}
-  {% for _ in rangeRow %}
-  <div class="containerPic">
-    {% with num|center:8 as range %}
-    {% for num in range %}
-    <div class="card">
-      <div class="info">
-        
-      </div>
+  
+  <div class="">
+    <div class="row mt-3" id="matchPic"></div>
+    <div class="row mt-3">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center" id="page">
+        </ul>
+      </nav>
+      
+      <div class="show"></div>
     </div>
-    {% endfor %}
-    {% endwith %}
   </div>
-  {% endfor %}
-  {% endwith %} -->
-  <div id="matchPic">
-    </div>
-  <div class="container">
-    <div class="row" id="content">
-    </div>
-    <nav aria-label="Page navigation example">
-       <ul class="pagination" id="pageid">
-       </ul>
-     </nav>
- </div>
+  
+  
+  
+  
+  <!-- <div class="pagination" id="pagination" ></div> -->
   <div class="text-center">
     <button class="btn btn-outline-secondary m-5 btn btn-outline-secondary btn-lg" onclick="history.back(-1)">回上一頁</button>
   </div>
-  <!-- <script src="vendor/jquery/jquery.min.js"></script> -->
-  <!-- <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
+  
   <script>
-    console.log(num)
+    let count = 0;
+    
     let placeOfPic = document.getElementById("matchPic");
     for(let index = 0 ; index < 3;index ++){
       placeOfPic.innerHTML += `
@@ -167,45 +162,72 @@
         `;
       }
     }
-
-
-    let elements = document.getElementsByClassName("card");
-    for (let index = 0; index < elements.length; index++) {
-      elements[index].innerHTML += `
-      <img src="${getFileName(num)}">
-      <p>${getDate(num)} ${getTime(num)} </p>
-      <p><strong>Similarity:</strong> <br> ${getContent(num)}</p>
-      `;
-      num = num + 1;
-    }
-    let elementsInfo = document.getElementsByClassName("info");
     
-    for (let index = 1; index <= elementsInfo.length; index++) {
-      elementsInfo[index-1].innerHTML += `
-      <button>View More</button>
-      <p> NO. ${ index }</p>
-      `;
-    }
-    const pageid = document.getElementById('pageid');
-    console.log(pageid);
-    // 用物件方式來傳遞資料
-    const page = {
-      dataTotal,
-      currentPage,
-      hasPage: currentPage > 1,
-      hasNext: currentPage < dataTotal,
-    }
-    pageBtn(page);
-    function pageBtn (page){
-      let str = '';
-      const total = page.dataTotal;
+    function showPicture(currentPage){
+      let elements = document.getElementsByClassName("card");
+      let elementsInfo = document.getElementsByClassName("info");
+      var num = 0;
+      if (count != 0){
+        for (let index = 0; index < elements.length; index++) {
+          elements[index].innerHTML = "";
+        }
+      }
       
-      for(let i = 0; i < total; i++){
-        str +=`<li class="page-item"><a class="page-link" href="#">${i}</a></li>`;
-      };
-    
-      pageid.innerHTML = str;
+      for (let index = 0; index < elements.length; index++) {
+        if (num+(currentPage-1)*24 >= 100){
+          break;
+        }
+        elements[index].innerHTML += `
+        <img src="${getFileName(num+(currentPage-1)*24)}">
+        <p>${getDate(num)} ${getTime(num+(currentPage-1)*24)} </p>
+        <p><strong>Similarity:</strong> <br> ${getContent(num+(currentPage-1)*24)}</p>
+        `;
+        num = num + 1;
+      }
+      
+      for (let index = 1; index <= elementsInfo.length; index++) {
+        if (index+(currentPage-1)*24 > 100){
+          break;
+        }
+        elementsInfo[index-1].innerHTML += `
+        <button>View More</button>
+        <p> NO. ${ index+(currentPage-1)*24 }</p>
+        `;
+      }
+      
+      count += 1;
     }
+    
+    
+   
+    $('#page').pagination({
+      total: 100, // 总数据条数
+      current: 1, // 当前页码
+      length: 24, // 每页数据量
+      size: 3, // 显示按钮个数
+      prev: 'Previous ',
+      next: 'Next ',
+      /**
+      * [click description]
+      * @param  {[object]} options = {
+      *      current: options.current,
+      *      length: options.length,
+      *      total: options.total
+      *  }
+      * @param  {[object]} $target [description]
+      * @return {[type]}         [description]
+      */
+      click: function(options,$target) { // 点击按钮事件
+        console.log(options);
+        if (options.current == 1){
+          showPicture(1);
+        }else{
+          showPicture(options.current);
+        } 
+        $target.next(".show").text('Current Page：Page '+options.current);
+      }
+    });
+    showPicture(1);
   </script>
 </body>
 
