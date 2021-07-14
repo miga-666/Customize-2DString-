@@ -18,7 +18,6 @@ def score(request):
         stringY = request.POST['StringY']
         ctx['stringX'] = stringX
         ctx['stringY'] = stringY
-        print(os.getcwd())
         os.chdir("/home/s3014/Customize-2DString-/mysite/weather/codes/")
         command = 'python3 compare_all_data.py ' + stringX +' ' + stringY
         ctx['allContainer'] = os.popen(command).readlines()
@@ -40,12 +39,6 @@ def score(request):
         jsonDate = json.dumps(ctx['resultDate'])
         ctx['jsonDate'] = jsonDate
         
-        print('===========')
-        print(jsonDate)
-        print('===========')
-        print(ctx['resultDate'])
-        print(ctx['resultTime'])
-        print(ctx['resultContent'])
     return render(request, "score.html", ctx)
 
 def segment(data):
@@ -127,14 +120,10 @@ def getQuery(request):
         for i in range(len(datalist)):
             datalist[i] = segment(datalist[i])
         dataString = ' '.join(str(word) for word in datalist)
-        print(dataString) 
-        print('---java----')
-        print(os.getcwd())
         os.chdir("/home/s3014/Customize-2DString-/mysite/weather/codes")
         os.system("javac ContourTracingViaWeb.java")
         command = "java ContourTracingViaWeb "+ dataString
         getString = os.popen(command).readlines()
-        print(getString[1])
 
         stringX = getString[1].split()[0]
         stringY = getString[1].split()[1]
@@ -142,12 +131,10 @@ def getQuery(request):
         ctx['stringX'] = stringX
         ctx['stringY'] = stringY
         # os.chdir("C:/sources/LCS")
-        print('---LCS----')
         # input can't read when starting with '#'
         stringXwithoutSharp = stringX[1:]
         stringYwithoutSharp = stringY[1:]
         command = 'python3 compare_all_data.py ' + stringXwithoutSharp +' ' + stringYwithoutSharp
-        print(command)
         ctx['allContainer'] = os.popen(command).readlines()
         
         date = []
@@ -168,16 +155,11 @@ def getQuery(request):
         jsonDate = json.dumps(ctx['resultDate'])
         ctx['jsonDate'] = jsonDate
         
-        print(jsonDate)
-        
-        print('---Pic----')
-        print(os.getcwd())
+        os.chdir("/home/s3014/Customize-2DString-/mysite/weather/codes")
+
         getPicCommand = 'python3 userDataPic.py ' + dataString
-        print(getPicCommand)
         getPicName = os.popen(getPicCommand).readlines()[0].strip()
         ctx['PicName'] = getPicName
-        print('---static----')
-        print(os.getcwd())
         os.chdir("/home/s3014/Customize-2DString-/mysite/weather/static/sis")
         mixPic(getPicName)
     return render(request, "score.html", ctx)

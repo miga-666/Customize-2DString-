@@ -9,6 +9,7 @@ pillow = "*"
 matplotlib = "*"
 numpy = "*"
 pandas = "*"
+uwsgi = "*"
 
 [dev-packages]
 
